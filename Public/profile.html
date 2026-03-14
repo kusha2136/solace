@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solace — My Profile</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #fce4ec 0%, #ede7f6 35%, #e8f5e9 70%, #e3f2fd 100%); padding-bottom: 3rem; }
+  .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.35; pointer-events: none; z-index: 0; }
+  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #f9d5d3, #dcd3f5); top: -150px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #c8eee4, #c9e8f5); bottom: -100px; right: -100px; }
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.8); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: #4a3f5c; text-decoration: none; }
+  .logo span { color: #b39ddb; font-style: italic; }
+  .nav-btn { background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9); border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.82rem; color: #7a6b8a; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .nav-btn:hover { background: rgba(255,255,255,0.9); }
+  main { max-width: 680px; margin: 0 auto; padding: 2.5rem 1.5rem; position: relative; z-index: 1; }
+  .avatar-hero { text-align: center; margin-bottom: 2.5rem; }
+  .big-avatar { width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #ce93d8, #90caf9); display: flex; align-items: center; justify-content: center; font-size: 2.2rem; font-weight: 600; color: white; margin: 0 auto 1rem; box-shadow: 0 6px 28px rgba(206,147,216,0.35); }
+  .avatar-hero h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 300; color: #4a3f5c; }
+  .avatar-hero p { font-size: 0.85rem; color: #7a6b8a; margin-top: 0.2rem; }
+  .section { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.85); border-radius: 22px; padding: 1.8rem; margin-bottom: 1.3rem; box-shadow: 0 4px 20px rgba(0,0,0,0.04); }
+  .section h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #4a3f5c; margin-bottom: 1.2rem; }
+  .field { margin-bottom: 1rem; }
+  label { display: block; font-size: 0.8rem; color: #7a6b8a; margin-bottom: 0.35rem; font-weight: 500; }
+  input[type="text"], input[type="password"] { width: 100%; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 12px; padding: 0.7rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #4a3f5c; outline: none; transition: border 0.2s; }
+  input:focus { border-color: #b39ddb; box-shadow: 0 0 0 3px rgba(179,157,219,0.15); }
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 0.6rem 0; }
+  .toggle-row span { font-size: 0.88rem; color: #4a3f5c; }
+  .toggle-row small { display: block; font-size: 0.75rem; color: #a899b8; margin-top: 0.1rem; }
+  .toggle { position: relative; width: 44px; height: 24px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider { position: absolute; inset: 0; background: #ddd; border-radius: 50px; cursor: pointer; transition: 0.3s; }
+  .slider:before { content: ''; position: absolute; width: 18px; height: 18px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: 0.3s; }
+  input:checked + .slider { background: linear-gradient(135deg, #ce93d8, #90caf9); }
+  input:checked + .slider:before { transform: translateX(20px); }
+  .colors { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-top: 0.5rem; }
+  .color-dot { width: 32px; height: 32px; border-radius: 50%; cursor: pointer; border: 3px solid transparent; transition: all 0.2s; }
+  .color-dot:hover, .color-dot.active { border-color: #4a3f5c; transform: scale(1.15); }
+  .save-btn { width: 100%; background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border: none; padding: 0.85rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; box-shadow: 0 4px 20px rgba(206,147,216,0.3); transition: all 0.3s; }
+  .save-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(206,147,216,0.45); }
+  .msg { padding: 0.7rem 1rem; border-radius: 12px; font-size: 0.83rem; margin-bottom: 1rem; display: none; }
+  .msg.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: block; }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<nav>
+  <a href="dashboard.html" class="logo">Sol<span>ace</span></a>
+  <a href="dashboard.html" class="nav-btn">← Back to Home</a>
+</nav>
+<main>
+  <div class="avatar-hero">
+    <div class="big-avatar" id="big_avatar">?</div>
+    <h2 id="profile_name">Your Profile</h2>
+    <p id="profile_sub">Member of Solace</p>
+  </div>
+  <div class="msg" id="msg"></div>
+  <div class="section">
+    <h3>🪄 Your Alias</h3>
+    <div class="field">
+      <label>Display name (what others see)</label>
+      <input type="text" id="alias_input" placeholder="MorningDew, QuietStar..." />
+    </div>
+    <p style="font-size:0.78rem; color:#a899b8; margin-top:-0.4rem;">This is the name other members see. Your real name is only visible to admins.</p>
+  </div>
+  <div class="section">
+    <h3>🛡️ Privacy</h3>
+    <div class="toggle-row">
+      <div>
+        <span>Anonymous mode</span>
+        <small>Other members only see your alias, never your real name</small>
+      </div>
+      <label class="toggle">
+        <input type="checkbox" id="anon_toggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="section">
+    <h3>🎨 Avatar Color</h3>
+    <div class="colors" id="color_picker">
+      <div class="color-dot active" style="background:linear-gradient(135deg,#ce93d8,#90caf9)" data-color="purple" onclick="pickColor(this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#80cbc4,#4db6ac)" data-color="teal" onclick="pickColor(this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#ffcc80,#ffa726)" data-color="amber" onclick="pickColor(this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#f48fb1,#e91e63)" data-color="rose" onclick="pickColor(this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#a5d6a7,#66bb6a)" data-color="green" onclick="pickColor(this)"></div>
+      <div class="color-dot" style="background:linear-gradient(135deg,#90caf9,#42a5f5)" data-color="blue" onclick="pickColor(this)"></div>
+    </div>
+  </div>
+  <div class="section">
+    <h3>🔒 Change Password</h3>
+    <div class="field">
+      <label>New password</label>
+      <input type="password" id="new_pass" placeholder="Leave blank to keep current" />
+    </div>
+  </div>
+  <button class="save-btn" onclick="saveProfile()">Save Changes 🌸</button>
+</main>
+<script>
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = 'login.html';
+  const alias = localStorage.getItem('alias') || '';
+  document.getElementById('alias_input').value = alias;
+  document.getElementById('profile_name').textContent = alias || 'Your Profile';
+  document.getElementById('big_avatar').textContent = alias ? alias[0].toUpperCase() : '?';
+  document.getElementById('profile_sub').textContent = 'Member of Solace 🌸';
+  function pickColor(el) {
+    document.querySelectorAll('.color-dot').forEach(d => d.classList.remove('active'));
+    el.classList.add('active');
+  }
+  function saveProfile() {
+    const newAlias = document.getElementById('alias_input').value.trim();
+    if (newAlias) { localStorage.setItem('alias', newAlias); document.getElementById('profile_name').textContent = newAlias; document.getElementById('big_avatar').textContent = newAlias[0].toUpperCase(); }
+    const msg = document.getElementById('msg');
+    msg.className = 'msg success'; msg.textContent = '🌸 Profile saved!';
+    setTimeout(() => msg.className = 'msg', 2500);
+  }
+</script>
+</body>
+</html>

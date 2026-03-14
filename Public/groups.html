@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solace — Groups</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #fce4ec 0%, #ede7f6 35%, #e8f5e9 70%, #e3f2fd 100%); }
+  .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.35; pointer-events: none; z-index: 0; }
+  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #f9d5d3, #dcd3f5); top: -150px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #c8eee4, #c9e8f5); bottom: -100px; right: -100px; }
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.8); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: #4a3f5c; text-decoration: none; }
+  .logo span { color: #b39ddb; font-style: italic; }
+  .nav-right { display: flex; gap: 0.8rem; }
+  .nav-btn { background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9); border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.82rem; color: #7a6b8a; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .nav-btn:hover { background: rgba(255,255,255,0.9); color: #4a3f5c; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; position: relative; z-index: 1; }
+  .page-header { margin-bottom: 2rem; }
+  .page-header h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 300; color: #4a3f5c; }
+  .page-header h1 em { font-style: italic; color: #ce93d8; }
+  .page-header p { color: #7a6b8a; margin-top: 0.4rem; font-size: 0.9rem; }
+  .filter-bar { display: flex; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 2rem; }
+  .filter-btn { background: rgba(255,255,255,0.55); border: 1px solid rgba(255,255,255,0.85); border-radius: 50px; padding: 0.45rem 1.1rem; font-size: 0.82rem; color: #7a6b8a; cursor: pointer; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .filter-btn:hover, .filter-btn.active { background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border-color: transparent; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.3rem; }
+  .group-card { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.85); border-radius: 22px; padding: 1.6rem; box-shadow: 0 4px 20px rgba(0,0,0,0.05); transition: all 0.3s; }
+  .group-card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.09); background: rgba(255,255,255,0.7); }
+  .group-icon { font-size: 1.8rem; margin-bottom: 0.8rem; }
+  .group-type { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.7rem; font-weight: 500; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .type-chat { background: #ede7f6; color: #7b1fa2; }
+  .type-video { background: #e3f2fd; color: #1565c0; }
+  .type-session { background: #fce4ec; color: #c2185b; }
+  .group-card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; color: #4a3f5c; margin-bottom: 0.4rem; }
+  .group-card p { font-size: 0.83rem; color: #7a6b8a; line-height: 1.6; margin-bottom: 1.1rem; }
+  .card-actions { display: flex; gap: 0.6rem; }
+  .btn-join { background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.8rem; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-block; }
+  .btn-join:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(206,147,216,0.4); }
+  .btn-chat { background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9); color: #7a6b8a; padding: 0.5rem 1.1rem; border-radius: 50px; font-size: 0.8rem; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; display: inline-block; }
+  .btn-chat:hover { background: rgba(255,255,255,0.9); color: #4a3f5c; }
+  .anon-badge { font-size: 0.72rem; color: #a899b8; margin-top: 0.8rem; display: flex; align-items: center; gap: 0.3rem; }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<nav>
+  <a href="dashboard.html" class="logo">Sol<span>ace</span></a>
+  <div class="nav-right">
+    <a href="dashboard.html" class="nav-btn">Home</a>
+    <a href="profile.html" class="nav-btn">Profile</a>
+    <button class="nav-btn" onclick="logout()">Sign out</button>
+  </div>
+</nav>
+<main>
+  <div class="page-header">
+    <h1>Find your <em>community</em></h1>
+    <p>Join a group and start talking with people who truly understand.</p>
+  </div>
+  <div class="filter-bar">
+    <button class="filter-btn active" onclick="filterGroups('all', this)">All Groups</button>
+    <button class="filter-btn" onclick="filterGroups('chat', this)">💬 Chat</button>
+    <button class="filter-btn" onclick="filterGroups('video', this)">📹 Video</button>
+    <button class="filter-btn" onclick="filterGroups('session', this)">🎙️ Sessions</button>
+  </div>
+  <div class="grid" id="groups_grid">
+    <div class="group-card" data-type="chat">
+      <div class="group-icon">🌅</div>
+      <span class="group-type type-chat">Chat</span>
+      <h3>Morning Anxiety Circle</h3>
+      <p>Start your day grounded. Share what's heavy and leave feeling lighter together.</p>
+      <div class="card-actions">
+        <button class="btn-join" onclick="joinGroup(1)">Join Group</button>
+        <a href="chat.html?group=1" class="btn-chat">Open Chat →</a>
+      </div>
+      <p class="anon-badge">🛡️ Anonymous mode supported</p>
+    </div>
+    <div class="group-card" data-type="chat">
+      <div class="group-icon">🕊️</div>
+      <span class="group-type type-chat">Chat</span>
+      <h3>Grief & Loss Support</h3>
+      <p>A compassionate space for anyone navigating loss, big or small, old or new.</p>
+      <div class="card-actions">
+        <button class="btn-join" onclick="joinGroup(2)">Join Group</button>
+        <a href="chat.html?group=2" class="btn-chat">Open Chat →</a>
+      </div>
+      <p class="anon-badge">🛡️ Anonymous mode supported</p>
+    </div>
+    <div class="group-card" data-type="video">
+      <div class="group-icon">🧘</div>
+      <span class="group-type type-video">Video</span>
+      <h3>Mindful Mondays</h3>
+      <p>Weekly video session on mindfulness techniques guided by our admin every Monday.</p>
+      <div class="card-actions">
+        <button class="btn-join" onclick="joinGroup(3)">Join Group</button>
+        <a href="chat.html?group=3" class="btn-chat">Video Room →</a>
+      </div>
+      <p class="anon-badge">🛡️ Anonymous mode supported</p>
+    </div>
+    <div class="group-card" data-type="chat">
+      <div class="group-icon">🌙</div>
+      <span class="group-type type-chat">Chat</span>
+      <h3>Late Night Thoughts</h3>
+      <p>For when thoughts get loud at night — a quiet corner always open, always safe.</p>
+      <div class="card-actions">
+        <button class="btn-join" onclick="joinGroup(4)">Join Group</button>
+        <a href="chat.html?group=4" class="btn-chat">Open Chat →</a>
+      </div>
+      <p class="anon-badge">🛡️ Anonymous mode supported</p>
+    </div>
+    <div class="group-card" data-type="session">
+      <div class="group-icon">💪</div>
+      <span class="group-type type-session">Session</span>
+      <h3>Resilience Workshop</h3>
+      <p>Admin-led weekly sessions focused on building resilience and coping strategies.</p>
+      <div class="card-actions">
+        <button class="btn-join" onclick="joinGroup(5)">Join Group</button>
+        <a href="chat.html?group=5" class="btn-chat">Open Chat →</a>
+      </div>
+      <p class="anon-badge">🛡️ Anonymous mode supported</p>
+    </div>
+    <div class="group-card" data-type="video">
+      <div class="group-icon">🌈</div>
+      <span class="group-type type-video">Video</span>
+      <h3>Creative Healing Circle</h3>
+      <p>Express yourself through art, writing, and music in a safe video space.</p>
+      <div class="card-actions">
+        <button class="btn-join" onclick="joinGroup(6)">Join Group</button>
+        <a href="chat.html?group=6" class="btn-chat">Video Room →</a>
+      </div>
+      <p class="anon-badge">🛡️ Anonymous mode supported</p>
+    </div>
+  </div>
+</main>
+<script>
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = 'login.html';
+  function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+  function filterGroups(type, btn) {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.group-card').forEach(card => {
+      card.style.display = (type === 'all' || card.dataset.type === type) ? 'block' : 'none';
+    });
+  }
+  async function joinGroup(id) {
+    try {
+      await fetch(`/api/groups/${id}/join`, { method: 'POST', headers: { 'Authorization': 'Bearer ' + token } });
+      window.location.href = `chat.html?group=${id}`;
+    } catch(e) { window.location.href = `chat.html?group=${id}`; }
+  }
+</script>
+</body>
+</html>

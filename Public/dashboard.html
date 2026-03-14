@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solace — Home</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; min-height: 100vh; background: linear-gradient(135deg, #fce4ec 0%, #ede7f6 35%, #e8f5e9 70%, #e3f2fd 100%); }
+  .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.35; pointer-events: none; z-index: 0; }
+  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #f9d5d3, #dcd3f5); top: -150px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #c8eee4, #c9e8f5); bottom: -100px; right: -100px; }
+  nav { position: sticky; top: 0; z-index: 100; background: rgba(255,255,255,0.45); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255,255,255,0.8); padding: 1rem 2rem; display: flex; align-items: center; justify-content: space-between; }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 600; color: #4a3f5c; text-decoration: none; }
+  .logo span { color: #b39ddb; font-style: italic; }
+  .nav-right { display: flex; align-items: center; gap: 1rem; }
+  .nav-alias { font-size: 0.85rem; color: #7a6b8a; }
+  .nav-btn { background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9); border-radius: 50px; padding: 0.4rem 1rem; font-size: 0.82rem; color: #7a6b8a; cursor: pointer; text-decoration: none; transition: all 0.2s; font-family: 'DM Sans', sans-serif; }
+  .nav-btn:hover { background: rgba(255,255,255,0.9); color: #4a3f5c; }
+  .nav-btn.admin { background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border: none; }
+  main { max-width: 1100px; margin: 0 auto; padding: 2.5rem 1.5rem; position: relative; z-index: 1; }
+  .welcome { margin-bottom: 2.5rem; }
+  .welcome h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); font-weight: 300; color: #4a3f5c; }
+  .welcome h1 em { font-style: italic; color: #ce93d8; }
+  .welcome p { color: #7a6b8a; margin-top: 0.5rem; font-size: 0.95rem; }
+  .section-title { font-family: 'Cormorant Garamond', serif; font-size: 1.4rem; font-weight: 400; color: #4a3f5c; margin-bottom: 1.2rem; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 1.2rem; margin-bottom: 2.5rem; }
+  .card { background: rgba(255,255,255,0.5); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.85); border-radius: 22px; padding: 1.6rem; box-shadow: 0 4px 24px rgba(0,0,0,0.05); transition: all 0.3s; }
+  .card:hover { transform: translateY(-4px); box-shadow: 0 10px 32px rgba(0,0,0,0.09); background: rgba(255,255,255,0.7); }
+  .card-icon { font-size: 1.6rem; margin-bottom: 0.8rem; }
+  .card h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; color: #4a3f5c; margin-bottom: 0.4rem; }
+  .card p { font-size: 0.82rem; color: #7a6b8a; line-height: 1.6; margin-bottom: 1rem; }
+  .card-btn { display: inline-block; background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border: none; padding: 0.5rem 1.2rem; border-radius: 50px; font-size: 0.8rem; font-family: 'DM Sans', sans-serif; cursor: pointer; text-decoration: none; transition: all 0.2s; }
+  .card-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(206,147,216,0.4); }
+  .card-btn.outline { background: rgba(255,255,255,0.6); color: #7a6b8a; border: 1px solid rgba(255,255,255,0.9); }
+  .card-btn.outline:hover { background: rgba(255,255,255,0.9); color: #4a3f5c; }
+  .session-tag { display: inline-block; padding: 0.2rem 0.7rem; border-radius: 50px; font-size: 0.7rem; font-weight: 500; margin-bottom: 0.6rem; text-transform: uppercase; letter-spacing: 0.06em; }
+  .tag-live { background: #fce4ec; color: #c2185b; }
+  .tag-open { background: #e8f5e9; color: #2e7d32; }
+  .tag-video { background: #e3f2fd; color: #1565c0; }
+  .mood-bar { background: rgba(255,255,255,0.5); border: 1px solid rgba(255,255,255,0.85); border-radius: 22px; padding: 1.6rem; margin-bottom: 2.5rem; }
+  .mood-bar h3 { font-family: 'Cormorant Garamond', serif; font-size: 1.1rem; color: #4a3f5c; margin-bottom: 1rem; }
+  .moods { display: flex; gap: 0.8rem; flex-wrap: wrap; }
+  .mood { background: rgba(255,255,255,0.6); border: 1px solid rgba(255,255,255,0.9); border-radius: 50px; padding: 0.5rem 1.1rem; font-size: 0.85rem; cursor: pointer; color: #7a6b8a; transition: all 0.2s; }
+  .mood:hover, .mood.active { background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border-color: transparent; }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<nav>
+  <a href="index.html" class="logo">Sol<span>ace</span></a>
+  <div class="nav-right">
+    <span class="nav-alias" id="nav_alias"></span>
+    <a href="profile.html" class="nav-btn">My Profile</a>
+    <a href="groups.html" class="nav-btn">Groups</a>
+    <a id="admin_link" href="admin.html" class="nav-btn admin" style="display:none">Admin</a>
+    <button class="nav-btn" onclick="logout()">Sign out</button>
+  </div>
+</nav>
+<main>
+  <div class="welcome">
+    <h1>Welcome back, <em id="alias_display">friend</em> 🌸</h1>
+    <p>How are you feeling today? This is your safe space.</p>
+  </div>
+
+  <div class="mood-bar">
+    <h3>How are you feeling right now?</h3>
+    <div class="moods">
+      <div class="mood" onclick="setMood(this)">😊 Good</div>
+      <div class="mood" onclick="setMood(this)">😌 Calm</div>
+      <div class="mood" onclick="setMood(this)">😔 Low</div>
+      <div class="mood" onclick="setMood(this)">😰 Anxious</div>
+      <div class="mood" onclick="setMood(this)">😢 Sad</div>
+      <div class="mood" onclick="setMood(this)">😤 Frustrated</div>
+      <div class="mood" onclick="setMood(this)">🤗 Grateful</div>
+      <div class="mood" onclick="setMood(this)">😶 Numb</div>
+    </div>
+  </div>
+
+  <p class="section-title">Your Community</p>
+  <div class="grid">
+    <div class="card">
+      <div class="card-icon">💬</div>
+      <h3>Group Chats</h3>
+      <p>Join a room and talk with people who understand what you're going through.</p>
+      <a href="groups.html" class="card-btn">Browse Groups →</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">📹</div>
+      <h3>Video Circles</h3>
+      <p>See faces, hear voices. Join a small video session and feel less alone.</p>
+      <a href="groups.html#video" class="card-btn">Join a Circle →</a>
+    </div>
+    <div class="card">
+      <div class="card-icon">👤</div>
+      <h3>Your Profile</h3>
+      <p>Change your alias, toggle anonymous mode, or update your preferences.</p>
+      <a href="profile.html" class="card-btn outline">Edit Profile →</a>
+    </div>
+  </div>
+
+  <p class="section-title">Upcoming Sessions</p>
+  <div class="grid" id="sessions_grid">
+    <div class="card">
+      <span class="session-tag tag-live">● Live Now</span>
+      <h3>Morning Anxiety Circle</h3>
+      <p>Start your day grounded. Share what's heavy and leave feeling lighter.</p>
+      <a href="chat.html?group=1" class="card-btn">Join Now →</a>
+    </div>
+    <div class="card">
+      <span class="session-tag tag-video">Video</span>
+      <h3>Mindful Mondays</h3>
+      <p>Weekly video session on mindfulness guided by our admin.</p>
+      <a href="groups.html" class="card-btn">Learn More →</a>
+    </div>
+    <div class="card">
+      <span class="session-tag tag-open">Always Open</span>
+      <h3>Late Night Thoughts</h3>
+      <p>For when thoughts get loud at night — a quiet corner just for you.</p>
+      <a href="chat.html?group=4" class="card-btn">Open Chat →</a>
+    </div>
+  </div>
+</main>
+<script>
+  const token = localStorage.getItem('token');
+  if (!token) window.location.href = 'login.html';
+  const alias = localStorage.getItem('alias') || 'friend';
+  const is_admin = localStorage.getItem('is_admin') === '1';
+  document.getElementById('alias_display').textContent = alias;
+  document.getElementById('nav_alias').textContent = alias;
+  if (is_admin) document.getElementById('admin_link').style.display = 'inline-block';
+  function logout() { localStorage.clear(); window.location.href = 'index.html'; }
+  function setMood(el) { document.querySelectorAll('.mood').forEach(m => m.classList.remove('active')); el.classList.add('active'); }
+</script>
+</body>
+</html>

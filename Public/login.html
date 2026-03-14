@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Solace — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; min-height: 100vh; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #fce4ec 0%, #ede7f6 35%, #e8f5e9 70%, #e3f2fd 100%); padding: 2rem; }
+  .orb { position: fixed; border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; }
+  .orb-1 { width: 500px; height: 500px; background: radial-gradient(circle, #f9d5d3, #dcd3f5); top: -150px; left: -100px; }
+  .orb-2 { width: 400px; height: 400px; background: radial-gradient(circle, #c8eee4, #c9e8f5); bottom: -100px; right: -100px; }
+  .card { background: rgba(255,255,255,0.6); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.85); border-radius: 28px; padding: 2.8rem; width: 100%; max-width: 440px; box-shadow: 0 8px 48px rgba(0,0,0,0.08); position: relative; z-index: 1; animation: fadeUp 0.6s ease both; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+  .logo { font-family: 'Cormorant Garamond', serif; font-size: 1.6rem; font-weight: 600; color: #4a3f5c; text-align: center; margin-bottom: 0.3rem; text-decoration: none; display: block; }
+  .logo span { color: #b39ddb; font-style: italic; }
+  .subtitle { text-align: center; color: #7a6b8a; font-size: 0.88rem; margin-bottom: 2rem; }
+  h2 { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: #4a3f5c; margin-bottom: 1.6rem; text-align: center; }
+  .field { margin-bottom: 1.1rem; }
+  label { display: block; font-size: 0.8rem; color: #7a6b8a; margin-bottom: 0.4rem; font-weight: 500; }
+  input[type="email"], input[type="password"] { width: 100%; background: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.9); border-radius: 12px; padding: 0.75rem 1rem; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; color: #4a3f5c; outline: none; transition: border 0.2s, box-shadow 0.2s; }
+  input:focus { border-color: #b39ddb; box-shadow: 0 0 0 3px rgba(179,157,219,0.15); }
+  input::placeholder { color: #a899b8; }
+  .btn { width: 100%; background: linear-gradient(135deg, #ce93d8, #90caf9); color: white; border: none; padding: 0.9rem; border-radius: 50px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; font-weight: 500; cursor: pointer; box-shadow: 0 4px 24px rgba(206,147,216,0.35); transition: all 0.3s; margin-top: 0.5rem; }
+  .btn:hover { transform: translateY(-2px); box-shadow: 0 8px 32px rgba(206,147,216,0.5); }
+  .footer-link { text-align: center; margin-top: 1.3rem; font-size: 0.83rem; color: #7a6b8a; }
+  .footer-link a { color: #b39ddb; text-decoration: none; font-weight: 500; }
+  .msg { padding: 0.75rem 1rem; border-radius: 12px; font-size: 0.83rem; margin-bottom: 1rem; display: none; }
+  .msg.error { background: #fce4ec; color: #c2185b; border: 1px solid #f8bbd9; display: block; }
+  .msg.success { background: #e8f5e9; color: #2e7d32; border: 1px solid #c8e6c9; display: block; }
+</style>
+</head>
+<body>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="card">
+  <a href="index.html" class="logo">Sol<span>ace</span></a>
+  <p class="subtitle">Welcome back 🌸</p>
+  <h2>Sign in</h2>
+  <div class="msg" id="msg"></div>
+  <div class="field">
+    <label>Email address</label>
+    <input type="email" id="email" placeholder="you@email.com" />
+  </div>
+  <div class="field">
+    <label>Password</label>
+    <input type="password" id="password" placeholder="Your password" />
+  </div>
+  <button class="btn" onclick="login()">Sign in 🌸</button>
+  <p class="footer-link">New here? <a href="register.html">Create a free account</a></p>
+</div>
+<script>
+  async function login() {
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const msg = document.getElementById('msg');
+    msg.className = 'msg';
+    if (!email || !password) { msg.className = 'msg error'; msg.textContent = 'Please fill in all fields.'; return; }
+    try {
+      const res = await fetch('/api/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password }) });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error);
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('alias', data.alias);
+      localStorage.setItem('is_admin', data.is_admin);
+      msg.className = 'msg success'; msg.textContent = 'Welcome back! Redirecting...';
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    } catch(e) { msg.className = 'msg error'; msg.textContent = e.message || 'Something went wrong.'; }
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+</script>
+</body>
+</html>
