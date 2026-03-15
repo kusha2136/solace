@@ -81,6 +81,6 @@ io.on('connection', (socket) => {
   });
 });
 
-app.get('/{*path}', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.use((req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
 
 server.listen(process.env.PORT || 3000, () => console.log('🌸 Solace running at http://localhost:3000'));
